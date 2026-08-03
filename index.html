@@ -43,7 +43,7 @@
     position:relative;
   }
 
-  /* ===== HEADER (siempre visible arriba) ===== */
+  /* ===== HEADER ===== */
   .brandbar{
     display:flex;
     align-items:center;
@@ -99,11 +99,21 @@
   .meta-item{text-align:left;}
   .meta-item .k{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#8b98a3;font-weight:700;}
   .meta-item .v{font-size:14px;color:var(--iacc-ink);font-weight:600;}
+
+  /* Grupo de botones en la portada */
+  .cover-actions{
+    display:flex;
+    gap:16px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+
   .start-btn{
     background:linear-gradient(135deg, var(--iacc-green), var(--iacc-green-dark));
     color:#fff;
     border:none;
-    padding:14px 38px;
+    padding:14px 32px;
     font-size:16px;
     font-weight:700;
     border-radius:10px;
@@ -112,6 +122,22 @@
     transition:transform .15s ease, box-shadow .15s ease;
   }
   .start-btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(78,154,46,0.45);}
+
+  .close-cover-btn{
+    background:#ffffff;
+    color:var(--iacc-navy);
+    border:2px solid #dbe4e4;
+    padding:12px 28px;
+    font-size:16px;
+    font-weight:700;
+    border-radius:10px;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .close-cover-btn:hover{
+    transform:translateY(-2px);
+    background:#f0f4f4;
+  }
 
   /* ===== PROGRESS ===== */
   .progress-wrap{
@@ -206,7 +232,7 @@
   .match-item{
     padding:11px 12px;
     border:2px solid #e2e8e8;
-    border-radius:9px;
+    border-radius:99px;
     background:#fbfdfd;
     font-size:13.5px;
     cursor:pointer;
@@ -312,6 +338,8 @@
     .vf-row{flex-direction:column;}
     .match-grid{flex-direction:column;}
     .chart-wrap{flex-direction:column;}
+    .cover-actions{flex-direction:column;width:100%;}
+    .start-btn, .close-cover-btn{width:100%;}
   }
 </style>
 </head>
@@ -333,7 +361,10 @@
       <div class="meta-item"><div class="k">Unidad</div><div class="v">Semana 8 — Archivos en Python</div></div>
       <div class="meta-item"><div class="k">Preguntas</div><div class="v">10 de 15 (aleatorio)</div></div>
     </div>
-    <button class="start-btn" id="startBtn">Comenzar cuestionario</button>
+    <div class="cover-actions">
+      <button class="start-btn" id="startBtn">Comenzar cuestionario</button>
+      <button class="close-cover-btn" id="closeCoverBtn">Cerrar pestaña</button>
+    </div>
   </div>
 
   <!-- QUIZ -->
@@ -638,7 +669,6 @@ function renderMatch(item){
         locked = true;
         addFeedbackBanner(false, 'Relación incorrecta. Mostrando las relaciones correctas...');
         setTimeout(()=>{
-          // revelar todas las correctas
           leftEls.forEach((le,idx)=>{
             le.classList.remove('selected','wrong-flash');
             le.classList.add('matched');
@@ -646,7 +676,6 @@ function renderMatch(item){
           rightEls.forEach(re=>{
             re.classList.remove('wrong-flash');
           });
-          // marcar el par correcto para cada left segun item.correct
           item.left.forEach((_,idx)=>{
             const correctRightIdx = item.correct[idx];
             const target = rightEls.find(r=>Number(r.dataset.idx)===correctRightIdx);
@@ -706,14 +735,18 @@ function showResults(){
   reflectionEl.innerHTML = `<b>Reflexión:</b> ${reflexion}`;
 }
 
+/* ============ CIERRE DE PESTAÑA ============ */
+function handleTabClose() {
+  window.close();
+  // Fallback por si el navegador bloquea window.close()
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:\'Segoe UI\', sans-serif;color:#1B2733;font-size:16px;">Puedes cerrar esta pestaña manualmente.</div>';
+}
+
 /* ============ EVENTOS GLOBALES ============ */
 document.getElementById('startBtn').addEventListener('click', startQuiz);
+document.getElementById('closeCoverBtn').addEventListener('click', handleTabClose);
 document.getElementById('repeatBtn').addEventListener('click', startQuiz);
-document.getElementById('closeBtn').addEventListener('click', ()=>{
-  window.close();
-  // Fallback por si el navegador bloquea el cierre de la pestaña
-  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#1B2733;font-size:16px;">Puedes cerrar esta pestaña manualmente.</div>';
-});
+document.getElementById('closeBtn').addEventListener('click', handleTabClose);
 </script>
 
 </body>
