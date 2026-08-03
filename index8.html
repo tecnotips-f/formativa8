@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cuestionario — Introducción a la Programación</title>
+<style>
+  :root{
+    --iacc-green:#6DBE45;
+    --iacc-green-dark:#4E9A2E;
+    --iacc-teal:#0FA8C7;
+    --iacc-teal-dark:#0A7E96;
+    --iacc-navy:#1B2733;
+    --iacc-ink:#22303C;
+    --iacc-paper:#F5F8F7;
+    --iacc-red:#E14B4B;
+    --iacc-red-dark:#B93636;
+    --shadow: 0 10px 30px rgba(27,39,51,0.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Segoe UI', Roboto, Arial, sans-serif;
+    background:
+      radial-gradient(1200px 600px at 100% -10%, rgba(15,168,199,0.15), transparent 60%),
+      radial-gradient(1000px 500px at -10% 110%, rgba(109,190,69,0.18), transparent 60%),
+      var(--iacc-paper);
+    color:var(--iacc-ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  .app{
+    width:80vw;
+    max-width:980px;
+    background:#fff;
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    position:relative;
+  }
+
+  /* ===== HEADER (siempre visible arriba) ===== */
+  .brandbar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px 24px;
+    background:var(--iacc-navy);
+  }
+  .course-tag-full{
+    color:#fff;
+    font-size:15px;
+    font-weight:800;
+    letter-spacing:0.6px;
+    text-align:center;
+    text-transform:uppercase;
+  }
+
+  /* ===== COVER ===== */
+  .cover{
+    padding:48px 32px 36px;
+    text-align:center;
+  }
+  .cover .badge{
+    display:inline-block;
+    background:linear-gradient(135deg, var(--iacc-teal), var(--iacc-teal-dark));
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    padding:6px 16px;
+    border-radius:999px;
+    margin-bottom:18px;
+  }
+  .cover h1{
+    font-size:28px;
+    margin:0 0 8px;
+    color:var(--iacc-navy);
+    font-weight:800;
+  }
+  .cover p.sub{
+    color:#5b6a75;
+    font-size:15px;
+    margin:0 0 28px;
+    line-height:1.5;
+  }
+  .cover .meta{
+    display:flex;
+    justify-content:center;
+    gap:28px;
+    margin-bottom:32px;
+    flex-wrap:wrap;
+  }
+  .meta-item{text-align:left;}
+  .meta-item .k{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#8b98a3;font-weight:700;}
+  .meta-item .v{font-size:14px;color:var(--iacc-ink);font-weight:600;}
+  .start-btn{
+    background:linear-gradient(135deg, var(--iacc-green), var(--iacc-green-dark));
+    color:#fff;
+    border:none;
+    padding:14px 38px;
+    font-size:16px;
+    font-weight:700;
+    border-radius:10px;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(78,154,46,0.35);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .start-btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(78,154,46,0.45);}
+
+  /* ===== PROGRESS ===== */
+  .progress-wrap{
+    padding:18px 28px 0;
+  }
+  .progress-info{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:12.5px;color:#5b6a75;font-weight:700;margin-bottom:8px;
+    letter-spacing:0.3px;
+  }
+  .progress-bar{
+    height:9px;
+    background:#e6ecec;
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--iacc-teal), var(--iacc-green));
+    border-radius:999px;
+    transition:width .35s ease;
+  }
+
+  /* ===== QUIZ BODY ===== */
+  .quiz-body{padding:22px 28px 30px;min-height:340px;}
+  .q-type{
+    display:inline-block;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--iacc-teal-dark);
+    background:rgba(15,168,199,0.12);
+    padding:4px 10px;
+    border-radius:6px;
+    margin-bottom:14px;
+  }
+  .q-text{
+    font-size:18px;
+    font-weight:700;
+    color:var(--iacc-navy);
+    line-height:1.4;
+    margin-bottom:20px;
+  }
+
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option{
+    text-align:left;
+    padding:13px 16px;
+    border:2px solid #e2e8e8;
+    border-radius:10px;
+    background:#fbfdfd;
+    font-size:14.5px;
+    color:var(--iacc-ink);
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease, transform .1s ease;
+    font-family:inherit;
+  }
+  .option:hover:not(.locked){border-color:var(--iacc-teal);background:#f0fbfd;}
+  .option.correct{
+    background:rgba(109,190,69,0.16);
+    border-color:var(--iacc-green-dark);
+    color:var(--iacc-green-dark);
+    font-weight:700;
+  }
+  .option.wrong{
+    background:rgba(225,75,75,0.14);
+    border-color:var(--iacc-red);
+    color:var(--iacc-red-dark);
+    font-weight:700;
+    animation:shake .35s ease;
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-6px);}
+    40%{transform:translateX(6px);}
+    60%{transform:translateX(-4px);}
+    80%{transform:translateX(4px);}
+  }
+
+  .vf-row{display:flex;gap:14px;}
+  .vf-row .option{flex:1;text-align:center;font-weight:700;font-size:16px;}
+
+  /* matching */
+  .match-grid{display:flex;gap:18px;}
+  .match-col{flex:1;display:flex;flex-direction:column;gap:10px;}
+  .match-col h4{
+    margin:0 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:1px;
+    color:#8b98a3;font-weight:800;
+  }
+  .match-item{
+    padding:11px 12px;
+    border:2px solid #e2e8e8;
+    border-radius:9px;
+    background:#fbfdfd;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .match-item:hover:not(.matched):not(.locked){border-color:var(--iacc-teal);}
+  .match-item.selected{border-color:var(--iacc-teal-dark);background:#e6f8fc;}
+  .match-item.matched{
+    border-color:var(--iacc-green-dark);
+    background:rgba(109,190,69,0.16);
+    color:var(--iacc-green-dark);
+    font-weight:700;
+    cursor:default;
+  }
+  .match-item.wrong-flash{
+    border-color:var(--iacc-red);
+    background:rgba(225,75,75,0.14);
+    color:var(--iacc-red-dark);
+    animation:shake .35s ease;
+  }
+
+  .feedback-banner{
+    margin-top:16px;
+    padding:10px 14px;
+    border-radius:9px;
+    font-size:13.5px;
+    font-weight:700;
+    display:none;
+  }
+  .feedback-banner.show{display:block;}
+  .feedback-banner.ok{background:rgba(109,190,69,0.16);color:var(--iacc-green-dark);}
+  .feedback-banner.bad{background:rgba(225,75,75,0.14);color:var(--iacc-red-dark);}
+
+  /* ===== RESULTS ===== */
+  .results{padding:36px 30px 30px;text-align:center;}
+  .results h2{color:var(--iacc-navy);font-size:22px;margin:0 0 6px;font-weight:800;}
+  .results .msg{color:#5b6a75;font-size:14.5px;margin-bottom:26px;line-height:1.5;}
+  .chart-wrap{display:flex;align-items:center;justify-content:center;gap:26px;flex-wrap:wrap;margin-bottom:24px;}
+  .pie{
+    width:170px;height:170px;border-radius:50%;
+    box-shadow: inset 0 0 0 10px #fff, 0 6px 18px rgba(27,39,51,0.15);
+    position:relative;
+  }
+  .pie::after{
+    content:'';
+    position:absolute;inset:26px;
+    background:#fff;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .pie-center{
+    position:absolute;inset:26px;background:#fff;border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .pie-center .big{font-size:26px;font-weight:800;color:var(--iacc-navy);}
+  .pie-center .small{font-size:10.5px;color:#8b98a3;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+  .legend{display:flex;flex-direction:column;gap:10px;text-align:left;}
+  .legend-item{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--iacc-ink);}
+  .dot{width:12px;height:12px;border-radius:3px;}
+  .dot.green{background:var(--iacc-green-dark);}
+  .dot.red{background:var(--iacc-red);}
+
+  .reflection{
+    background:rgba(15,168,199,0.08);
+    border-left:4px solid var(--iacc-teal);
+    border-radius:8px;
+    padding:14px 16px;
+    text-align:left;
+    font-size:13.5px;
+    color:var(--iacc-ink);
+    line-height:1.55;
+    margin-bottom:26px;
+  }
+  .result-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    border:none;padding:12px 26px;border-radius:10px;font-size:14.5px;font-weight:700;
+    cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg, var(--iacc-green), var(--iacc-green-dark));
+    color:#fff;box-shadow:0 8px 18px rgba(78,154,46,0.3);
+  }
+  .btn-secondary{
+    background:#fff;color:var(--iacc-navy);border:2px solid #dbe4e4;
+  }
+  .btn:hover{transform:translateY(-2px);}
+
+  /* ===== FOOTER ===== */
+  .footerbar{
+    padding:12px 24px;
+    background:#eef3f2;
+    border-top:1px solid #dfe7e6;
+    text-align:center;
+    font-size:11.5px;
+    color:#6b7981;
+    font-weight:600;
+    letter-spacing:0.2px;
+  }
+  .footerbar b{color:var(--iacc-navy);}
+
+  .hidden{display:none !important;}
+
+  @media (max-width:520px){
+    .vf-row{flex-direction:column;}
+    .match-grid{flex-direction:column;}
+    .chart-wrap{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="brandbar">
+    <div class="course-tag course-tag-full">Introducción a la Programación</div>
+  </div>
+
+  <!-- PORTADA -->
+  <div id="cover" class="cover">
+    <span class="badge">Cuestionario interactivo</span>
+    <h1>Manejo y procesamiento de archivos</h1>
+    <p class="sub">Pon a prueba lo aprendido con 10 preguntas seleccionadas al azar entre verdadero/falso, selección simple y emparejamiento. Puedes repetir el cuestionario todas las veces que quieras.</p>
+    <div class="meta">
+      <div class="meta-item"><div class="k">Asignatura</div><div class="v">Introducción a la Programación</div></div>
+      <div class="meta-item"><div class="k">Unidad</div><div class="v">Semana 8 — Archivos en Python</div></div>
+      <div class="meta-item"><div class="k">Preguntas</div><div class="v">10 de 15 (aleatorio)</div></div>
+    </div>
+    <button class="start-btn" id="startBtn">Comenzar cuestionario</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quizScreen" class="hidden">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span id="progressLabel">Pregunta 1 de 10</span>
+        <span id="scoreLabel">Aciertos: 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <div class="quiz-body" id="quizBody"></div>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div id="resultsScreen" class="hidden results">
+    <h2 id="resultTitle">¡Cuestionario finalizado!</h2>
+    <p class="msg" id="resultSubtitle"></p>
+    <div class="chart-wrap">
+      <div class="pie" id="pieChart">
+        <div class="pie-center"><div class="big" id="pieBig">0%</div><div class="small">Correctas</div></div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="dot green"></span><span id="legendCorrect">Correctas: 0 (0%)</span></div>
+        <div class="legend-item"><span class="dot red"></span><span id="legendWrong">Incorrectas: 0 (0%)</span></div>
+      </div>
+    </div>
+    <div class="reflection" id="reflectionBox"></div>
+    <div class="result-actions">
+      <button class="btn btn-primary" id="repeatBtn">Repetir cuestionario</button>
+      <button class="btn btn-secondary" id="closeBtn">Cerrar</button>
+    </div>
+  </div>
+
+  <div class="footerbar">
+    Docente: <b>Franklin Morillo</b> · IACC 2026 · Fuente: elaboración propia en Python (2026)
+  </div>
+</div>
+
+<script>
+/* ============ BANCO DE PREGUNTAS (15) ============ */
+const BANK = [
+  {type:'vf', q:'Un archivo en programación permite guardar información que puede utilizarse incluso después de que el programa se haya cerrado.', a:true},
+  {type:'vf', q:'El modo "r" en Python se utiliza para abrir un archivo en modo escritura.', a:false},
+  {type:'vf', q:'La estructura "with" cierra automáticamente el archivo al finalizar el bloque de código.', a:true},
+  {type:'vf', q:'Los archivos CSV solo pueden almacenar un único dato, sin ninguna organización en filas y columnas.', a:false},
+  {type:'vf', q:'Leer un archivo línea por línea es más eficiente que cargar todo el contenido de una vez cuando el archivo es muy grande.', a:true},
+  {type:'vf', q:'Una buena práctica es no verificar si el archivo existe antes de abrirlo.', a:false},
+  {type:'vf', q:'Generar reportes automatizados a partir de archivos permite ahorrar tiempo y reducir errores en tareas repetitivas.', a:true},
+
+  {type:'mc', q:'¿Qué modo de apertura se utiliza para agregar información a un archivo sin borrar su contenido existente?',
+    options:['r (lectura)','w (escritura)','a (agregar)','x (creación exclusiva)'], correct:2},
+  {type:'mc', q:'¿Qué módulo de Python se utiliza comúnmente para trabajar con archivos CSV?',
+    options:['os','csv','sys','math'], correct:1},
+  {type:'mc', q:'¿Qué método permite leer todo el contenido de un archivo de texto de una sola vez?',
+    options:['archivo.write()','archivo.read()','archivo.close()','archivo.open()'], correct:1},
+  {type:'mc', q:'¿Cuál es la principal ventaja de usar la estructura "with" al trabajar con archivos?',
+    options:['Permite abrir archivos ilimitados a la vez','Cierra el archivo automáticamente y evita errores por archivos abiertos','Convierte archivos CSV en TXT','Aumenta la velocidad de internet'], correct:1},
+  {type:'mc', q:'¿Para qué se utiliza principalmente os.path.join()?',
+    options:['Para leer archivos CSV','Para construir rutas de archivo compatibles entre distintos sistemas operativos','Para cerrar archivos abiertos','Para generar reportes automáticos'], correct:1},
+  {type:'mc', q:'¿Cuál de las siguientes es una buena práctica en el manejo de archivos?',
+    options:['Dejar los archivos abiertos siempre','Verificar la existencia del archivo antes de abrirlo','Ignorar los errores de lectura o escritura','Sobrescribir archivos sin ningún control'], correct:1},
+
+  {type:'match', q:'Relaciona cada modo de apertura de archivo con su función correspondiente.',
+    left:['r','w','a'],
+    right:['Agregar información sin borrar el contenido','Leer el contenido de un archivo','Escribir y sobrescribir un archivo'],
+    correct:[1,2,0]},
+  {type:'match', q:'Relaciona cada concepto con su descripción.',
+    left:['with','csv.writer','strip()'],
+    right:['Elimina espacios y saltos de línea al inicio/final de un texto','Escribe filas de datos en formato CSV','Abre archivos de forma segura y los cierra automáticamente'],
+    correct:[2,1,0]},
+];
+
+/* ============ ESTADO ============ */
+let selected = [];      // preguntas de esta ronda (10)
+let currentIndex = 0;
+let correctCount = 0;
+let locked = false;     // evita doble click mientras se procesa feedback
+
+const coverEl = document.getElementById('cover');
+const quizScreen = document.getElementById('quizScreen');
+const resultsScreen = document.getElementById('resultsScreen');
+const quizBody = document.getElementById('quizBody');
+const progressFill = document.getElementById('progressFill');
+const progressLabel = document.getElementById('progressLabel');
+const scoreLabel = document.getElementById('scoreLabel');
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function startQuiz(){
+  selected = shuffle(BANK).slice(0,10);
+  currentIndex = 0;
+  correctCount = 0;
+  locked = false;
+  coverEl.classList.add('hidden');
+  resultsScreen.classList.add('hidden');
+  quizScreen.classList.remove('hidden');
+  renderQuestion();
+}
+
+function updateProgress(){
+  const pct = (currentIndex/selected.length)*100;
+  progressFill.style.width = pct+'%';
+  progressLabel.textContent = `Pregunta ${currentIndex+1} de ${selected.length}`;
+  scoreLabel.textContent = `Aciertos: ${correctCount}`;
+}
+
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex>=selected.length){
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function renderQuestion(){
+  locked = false;
+  updateProgress();
+  const item = selected[currentIndex];
+  quizBody.innerHTML = '';
+
+  const typeLabel = document.createElement('div');
+  typeLabel.className = 'q-type';
+  typeLabel.textContent = item.type==='vf' ? 'Verdadero o falso' : (item.type==='mc' ? 'Selección simple' : 'Emparejamiento');
+  quizBody.appendChild(typeLabel);
+
+  const qText = document.createElement('div');
+  qText.className = 'q-text';
+  qText.textContent = item.q;
+  quizBody.appendChild(qText);
+
+  if(item.type==='vf'){
+    renderVF(item);
+  } else if(item.type==='mc'){
+    renderMC(item);
+  } else if(item.type==='match'){
+    renderMatch(item);
+  }
+}
+
+function addFeedbackBanner(isOk, text){
+  const banner = document.createElement('div');
+  banner.className = 'feedback-banner show ' + (isOk?'ok':'bad');
+  banner.textContent = text;
+  quizBody.appendChild(banner);
+}
+
+/* ---------- Verdadero / Falso ---------- */
+function renderVF(item){
+  const row = document.createElement('div');
+  row.className = 'vf-row';
+  const optV = document.createElement('button');
+  optV.className = 'option';
+  optV.textContent = 'Verdadero';
+  const optF = document.createElement('button');
+  optF.className = 'option';
+  optF.textContent = 'Falso';
+
+  function handle(userAnswer, btnClicked){
+    if(locked) return;
+    locked = true;
+    const isCorrect = userAnswer === item.a;
+    const correctBtn = item.a ? optV : optF;
+    if(isCorrect){
+      btnClicked.classList.add('correct');
+      correctCount++;
+      addFeedbackBanner(true, '¡Correcto!');
+      updateProgress();
+      setTimeout(nextQuestion, 700);
+    } else {
+      btnClicked.classList.add('wrong');
+      correctBtn.classList.add('correct');
+      addFeedbackBanner(false, 'Incorrecto. La respuesta correcta es: ' + (item.a?'Verdadero':'Falso'));
+      updateProgress();
+      setTimeout(nextQuestion, 2000);
+    }
+  }
+
+  optV.addEventListener('click', ()=>handle(true, optV));
+  optF.addEventListener('click', ()=>handle(false, optF));
+  row.appendChild(optV);
+  row.appendChild(optF);
+  quizBody.appendChild(row);
+}
+
+/* ---------- Selección simple ---------- */
+function renderMC(item){
+  const wrap = document.createElement('div');
+  wrap.className = 'options';
+  const order = shuffle(item.options.map((opt,i)=>({opt,i})));
+
+  order.forEach(entry=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = entry.opt;
+    btn.addEventListener('click', ()=>{
+      if(locked) return;
+      locked = true;
+      const isCorrect = entry.i === item.correct;
+      if(isCorrect){
+        btn.classList.add('correct');
+        correctCount++;
+        addFeedbackBanner(true, '¡Correcto!');
+        updateProgress();
+        setTimeout(nextQuestion, 700);
+      } else {
+        btn.classList.add('wrong');
+        [...wrap.children].forEach((b,idx)=>{
+          if(order[idx].i === item.correct) b.classList.add('correct');
+          b.classList.add('locked');
+        });
+        addFeedbackBanner(false, 'Incorrecto. La respuesta correcta es: ' + item.options[item.correct]);
+        updateProgress();
+        setTimeout(nextQuestion, 2000);
+      }
+    });
+    wrap.appendChild(btn);
+  });
+  quizBody.appendChild(wrap);
+}
+
+/* ---------- Emparejamiento ---------- */
+function renderMatch(item){
+  const grid = document.createElement('div');
+  grid.className = 'match-grid';
+
+  const leftCol = document.createElement('div');
+  leftCol.className = 'match-col';
+  const leftTitle = document.createElement('h4');
+  leftTitle.textContent = 'Concepto';
+  leftCol.appendChild(leftTitle);
+
+  const rightCol = document.createElement('div');
+  rightCol.className = 'match-col';
+  const rightTitle = document.createElement('h4');
+  rightTitle.textContent = 'Descripción';
+  rightCol.appendChild(rightTitle);
+
+  const rightOrder = shuffle(item.right.map((txt,i)=>({txt,i})));
+
+  let selLeft = null;
+  let matchedCount = 0;
+  const totalPairs = item.left.length;
+  let mistakeMade = false;
+
+  const leftEls = [];
+  const rightEls = [];
+
+  item.left.forEach((txt, i)=>{
+    const el = document.createElement('div');
+    el.className = 'match-item';
+    el.textContent = txt;
+    el.dataset.idx = i;
+    el.addEventListener('click', ()=>{
+      if(locked || el.classList.contains('matched')) return;
+      leftEls.forEach(e=>e.classList.remove('selected'));
+      el.classList.add('selected');
+      selLeft = i;
+    });
+    leftEls.push(el);
+    leftCol.appendChild(el);
+  });
+
+  rightOrder.forEach(entry=>{
+    const el = document.createElement('div');
+    el.className = 'match-item';
+    el.textContent = entry.txt;
+    el.dataset.idx = entry.i;
+    el.addEventListener('click', ()=>{
+      if(locked || el.classList.contains('matched') || selLeft===null) return;
+      const isCorrect = item.correct[selLeft] === entry.i;
+      const leftEl = leftEls[selLeft];
+      if(isCorrect){
+        leftEl.classList.remove('selected');
+        leftEl.classList.add('matched');
+        el.classList.add('matched');
+        selLeft = null;
+        matchedCount++;
+        if(matchedCount === totalPairs){
+          locked = true;
+          if(!mistakeMade){
+            correctCount++;
+            addFeedbackBanner(true, '¡Correcto! Todas las relaciones son correctas.');
+          } else {
+            addFeedbackBanner(false, 'Completado, pero hubo un error en el intento.');
+          }
+          updateProgress();
+          setTimeout(nextQuestion, mistakeMade?2000:700);
+        }
+      } else {
+        mistakeMade = true;
+        leftEl.classList.add('wrong-flash');
+        el.classList.add('wrong-flash');
+        locked = true;
+        addFeedbackBanner(false, 'Relación incorrecta. Mostrando las relaciones correctas...');
+        setTimeout(()=>{
+          // revelar todas las correctas
+          leftEls.forEach((le,idx)=>{
+            le.classList.remove('selected','wrong-flash');
+            le.classList.add('matched');
+          });
+          rightEls.forEach(re=>{
+            re.classList.remove('wrong-flash');
+          });
+          // marcar el par correcto para cada left segun item.correct
+          item.left.forEach((_,idx)=>{
+            const correctRightIdx = item.correct[idx];
+            const target = rightEls.find(r=>Number(r.dataset.idx)===correctRightIdx);
+            if(target) target.classList.add('matched');
+          });
+          updateProgress();
+          setTimeout(nextQuestion, 1300);
+        }, 700);
+      }
+    });
+    rightEls.push(el);
+    rightCol.appendChild(el);
+  });
+
+  grid.appendChild(leftCol);
+  grid.appendChild(rightCol);
+  quizBody.appendChild(grid);
+}
+
+/* ============ RESULTADOS ============ */
+function showResults(){
+  quizScreen.classList.add('hidden');
+  resultsScreen.classList.remove('hidden');
+
+  const total = selected.length;
+  const wrong = total - correctCount;
+  const pctCorrect = Math.round((correctCount/total)*100);
+  const pctWrong = 100 - pctCorrect;
+
+  const pie = document.getElementById('pieChart');
+  pie.style.background = `conic-gradient(#4E9A2E 0% ${pctCorrect}%, #E14B4B ${pctCorrect}% 100%)`;
+  document.getElementById('pieBig').textContent = pctCorrect+'%';
+  document.getElementById('legendCorrect').textContent = `Correctas: ${correctCount} (${pctCorrect}%)`;
+  document.getElementById('legendWrong').textContent = `Incorrectas: ${wrong} (${pctWrong}%)`;
+
+  const titleEl = document.getElementById('resultTitle');
+  const subEl = document.getElementById('resultSubtitle');
+  const reflectionEl = document.getElementById('reflectionBox');
+
+  let felicitacion, reflexion;
+  if(pctCorrect >= 90){
+    felicitacion = '¡Excelente trabajo! 🎉';
+    reflexion = 'Dominas con solidez el manejo y procesamiento de archivos en Python: apertura, lectura, escritura, uso de "with" y generación de reportes. Sigue así: esta habilidad es la base para automatizar tareas reales y trabajar con datos persistentes en tus futuros proyectos.';
+  } else if(pctCorrect >= 70){
+    felicitacion = '¡Muy buen desempeño! 👏';
+    reflexion = 'Tienes un buen manejo de los conceptos clave. Repasa los detalles sobre los modos de apertura (r, w, a) y la manipulación de rutas con "os.path" para afianzar aún más tu comprensión antes de avanzar a temas más complejos.';
+  } else if(pctCorrect >= 50){
+    felicitacion = '¡Vas por buen camino! 💪';
+    reflexion = 'Lograste responder correctamente más de la mitad del cuestionario. Te recomendamos volver a revisar el material sobre la estructura "with", los archivos CSV y la lectura línea por línea para consolidar estos conceptos fundamentales.';
+  } else {
+    felicitacion = '¡Sigue practicando! 🌱';
+    reflexion = 'Este es un buen punto de partida. Te invitamos a revisar nuevamente el documento de contenido de la Semana 8 sobre manejo y procesamiento de archivos, y a repetir el cuestionario las veces que necesites: la práctica constante es clave para dominar la programación.';
+  }
+
+  titleEl.textContent = felicitacion;
+  subEl.textContent = `Obtuviste ${correctCount} de ${total} respuestas correctas.`;
+  reflectionEl.innerHTML = `<b>Reflexión:</b> ${reflexion}`;
+}
+
+/* ============ EVENTOS GLOBALES ============ */
+document.getElementById('startBtn').addEventListener('click', startQuiz);
+document.getElementById('repeatBtn').addEventListener('click', startQuiz);
+document.getElementById('closeBtn').addEventListener('click', ()=>{
+  window.close();
+  // Fallback por si el navegador bloquea el cierre de la pestaña
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#1B2733;font-size:16px;">Puedes cerrar esta pestaña manualmente.</div>';
+});
+</script>
+
+</body>
+</html>
